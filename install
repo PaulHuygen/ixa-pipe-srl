@@ -7,7 +7,7 @@ res=0
 function pf () {
     commandstring=$1
     if
-	[ $res == 0]
+	[ $res == 0 ]
     then
 	eval ${commandstring}
         res=$?
@@ -19,7 +19,7 @@ function errorcheck () {
 if
     [ $res -gt 0 ]
 then
-    echo $errmess
+    echo $errmess >&2
     exit 4
 fi    
 }
@@ -37,12 +37,12 @@ errorcheck "Failure to Install ixa-pipe-srl failed. Couldn\'t install mate-tools
 
 cd ${moddir}/IXA-EHU-srl
 mvn clean package
+mvn clean install
 res=$?
 
 errorcheck "Failure to build IXA-EHU-srl jar."
 
-cd ${thisdir}
-pf "mkdir target/models"
+pf "mkdir -p target/models"
 pf "mkdir target/models/eng"
 pf "mkdir target/models/spa"
 
@@ -51,7 +51,32 @@ pf "wget http://fileadmin.cs.lth.se/nlp/models/srl/en/srl-20100906/srl-eng.model
 pf "wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mate-tools/CoNLL2009-ST-Spanish-ALL.anna-3.3.parser.model --directory-prefix=target/models/spa/"
 pf "wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mate-tools/CoNLL2009-ST-Spanish-ALL.anna-3.3.morphtagger.model --directory-prefix=target/models/spa/"
 pf "wget http://adimen.si.ehu.es/web/files/AnCoraModel/srl-spa.model --directory-prefix=target/models/spa/"
-pf "mv models.cnf target"
 
 errorcheck "Failure to install models for IXA-srl-jar"
 
+cat >target/models.cnf <<EOF
+eng	deps	${moddir}/IXA-EHU-srl/target/models/eng/CoNLL2009-ST-English-ALL.anna-3.3.parser.model
+eng	srl	${moddir}/IXA-EHU-srl/target/models/eng/srl-eng.model
+spa	deps	full-path-to-parser-model-for-spanish
+spa	srl	full-path-to-srl-model-for-spanish
+spa	morph	full-path-to-morphotagger-model-for-spanish
+EOF
+
+res=$?
+
+errorcheck "Failure to generate models.cnf"
+
+pf "mkdir -p target/PredicateMatrix"
+pf "wget http://adimen.si.ehu.es/web/files/PredicateMatrix/PredicateMatrix.srl-module.tar.gz"
+pf "tar -zxf PredicateMatrix.srl-module.tar.gz -C target/PredicateMatrix/"
+pf "rm -f PredicateMatrix.srl-module.tar.gz"
+
+errorcheck "Failure to install the Predicatematrix."
+
+
+
+echo ""
+echo "======================"
+echo "ixa-srl-jar installed."
+echo "======================"
+echo ""
