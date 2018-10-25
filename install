@@ -1,0 +1,57 @@
+#!/bin/bash
+# Install ixa-pipe-srl
+moddir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $moddir
+res=0
+
+function pf () {
+    commandstring=$1
+    if
+	[ $res == 0]
+    then
+	eval ${commandstring}
+        res=$?
+    fi
+}
+
+function errorcheck () {
+    errmess=$1
+if
+    [ $res -gt 0 ]
+then
+    echo $errmess
+    exit 4
+fi    
+}
+
+
+pf "wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mate-tools/srl-4.3.tgz"
+pf "tar -zxvf srl-4.3.tgz srl-20130917/lib/liblinear-1.51-with-deps.jar"
+pf "tar -zxvf srl-4.3.tgz srl-20130917/lib/seg.jar"
+pf "tar -zxvf srl-4.3.tgz srl-20130917/srl.jar"
+pf "mvn install:install-file -Dfile=srl-20130917/lib/liblinear-1.51-with-deps.jar -DgroupId=local -DartifactId=liblinear -Dversion=1.51 -Dpackaging=jar"
+pf "mvn install:install-file -Dfile=srl-20130917/srl.jar -DgroupId=local -DartifactId=srl -Dversion=1.0 -Dpackaging=jar"
+pf "mvn install:install-file -Dfile=srl-20130917/lib/seg.jar -DgroupId=local -DartifactId=seg -Dversion=1.0 -Dpackaging=jar"
+
+errorcheck "Failure to Install ixa-pipe-srl failed. Couldn\'t install mate-tools." 
+
+cd ${moddir}/IXA-EHU-srl
+mvn clean package
+res=$?
+
+errorcheck "Failure to build IXA-EHU-srl jar."
+
+cd ${thisdir}
+pf "mkdir target/models"
+pf "mkdir target/models/eng"
+pf "mkdir target/models/spa"
+
+pf "wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mate-tools/CoNLL2009-ST-English-ALL.anna-3.3.parser.model --directory-prefix=target/models/eng/"
+pf "wget http://fileadmin.cs.lth.se/nlp/models/srl/en/srl-20100906/srl-eng.model --directory-prefix=target/models/eng/"
+pf "wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mate-tools/CoNLL2009-ST-Spanish-ALL.anna-3.3.parser.model --directory-prefix=target/models/spa/"
+pf "wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mate-tools/CoNLL2009-ST-Spanish-ALL.anna-3.3.morphtagger.model --directory-prefix=target/models/spa/"
+pf "wget http://adimen.si.ehu.es/web/files/AnCoraModel/srl-spa.model --directory-prefix=target/models/spa/"
+pf "mv models.cnf target"
+
+errorcheck "Failure to install models for IXA-srl-jar"
+
