@@ -33,6 +33,6 @@ PROCESS_STATUS=$?
 if
     [ $PROCESS_STATUS -gt 0 ]
 then
-    exec java -Xms2500m -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLServer en
+    (exec java -Xms2500m -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLServer en ) &
     sleep 60
 fi
