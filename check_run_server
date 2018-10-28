@@ -1,0 +1,38 @@
+#!/bin/bash
+# The script:
+# - checks whether a process listens to port nr srlserver_port.
+# - if that is not the case, it starts the server.
+# process-management systems like systemd do no work in Docker containers.
+# Don't bother to make the port a variable, because it is hard-wired in the Java-code.
+modname=ixa-pipe-srl
+srlserver_port=5005
+if
+    [ -z ${MODROOT+x} ]
+then
+    thisdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+else
+    thisdir=${MODROOT}/$modname
+fi    
+cd $thisdir
+
+#srlserver_port_default=5005
+#opts=""
+#while getopts p: opt; do
+#   case $opt in
+#     p) srlserver_port=$OPTARG
+#        ;;
+#     *) echo "Unknown option." 
+#        exit 1
+#        ;;
+#    esac
+#done
+#srlserver_port=${srlserver_port:-${srlserver_port_default}}
+
+lsof -i:${srlserver_port} &> /dev/null
+PROCESS_STATUS=$?
+if
+    [ $PROCESS_STATUS -gt 0]
+then
+    exec java -Xms2500m -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLServer en
+    sleep 60
+fi

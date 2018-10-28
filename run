@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+
+modname=ixa-pipe-srl
+if
+    [ -z ${MODROOT+x} ]
+then
+    thisdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+else
+    thisdir=${MODROOT}/$modname
+fi    
+cd $thisdir
+srlserver_port=5005
+./check_run_server
+
+java -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en
