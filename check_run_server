@@ -31,7 +31,7 @@ cd $thisdir
 lsof -i:${srlserver_port} &> /dev/null
 PROCESS_STATUS=$?
 if
-    [ $PROCESS_STATUS -gt 0]
+    [ $PROCESS_STATUS -gt 0 ]
 then
     exec java -Xms2500m -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLServer en
     sleep 60
