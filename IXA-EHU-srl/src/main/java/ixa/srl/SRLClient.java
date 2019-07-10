@@ -15,7 +15,7 @@ import java.net.Socket;
 
 public class SRLClient {
 
-	static final String HOST = "localhost";
+	static String HOST = "localhost";
 	static int PORT;
 	
 	public static void main(String[] args) {
@@ -42,11 +42,14 @@ public class SRLClient {
 				PORT = 5007;
 				lang = "spa";
 			}
-			
-			String options = "";
-			if (args.length == 2) {
-				options = args[1];
+			if (args.length > 1){
+			    HOST = args[1];
 			}
+			String options = "";
+			if (args.length == 3) {
+				options = args[2];
+			}
+			System.err.println("Host: " + HOST);
 			
 			Socket socketSRLClient = new Socket(HOST, PORT);
 			InputStream dataInStream = socketSRLClient.getInputStream();

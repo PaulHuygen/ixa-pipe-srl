@@ -145,17 +145,29 @@ First, the server must been initialize:
 
 It is strongly recomended to reserve at least 2,5 gigabytes of memory for the execution of the server module. After loading all the modules the server will stay listening for client petitions. The client module can be executed in three different modes:
 
+As of july 10, 2019, the server may run on another host. 
+
 To perform dependency parsing and semantic role labelling:
 
     cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en
 
+When the srver runs on another host, add the nae of that host to the
+command, eg:
+
+    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en example.com
+
+
 To perform just dependency parsing:
 
-    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en only-deps
-    
+    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en localhost only-deps
+
+or:
+
+    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en example.com only-deps 
+
 To perform just semantic role labelling:
 
-    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en only-srl
+    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en localhost only-srl
 
 In the last case the input in NAF must contain syntactic dependencies too.
 
@@ -167,6 +179,6 @@ To run the program for Spanish:
 
     cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient es
     
-    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient es only-deps
+    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient es localhost only-deps
     
-    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient es only-srl
+    cat infile.naf | java -cp /path-to-the-jar/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient es localhost only-srl

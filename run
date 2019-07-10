@@ -11,6 +11,6 @@ else
 fi    
 cd $thisdir
 srlserver_port=5005
-./check_run_server >/dev/null
+# ./check_run_server >/dev/null
 
-java -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en
+java -cp ${thisdir}/IXA-EHU-srl/target/IXA-EHU-srl-3.0.jar ixa.srl.SRLClient en $srlhost
